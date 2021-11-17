@@ -84,18 +84,26 @@ def pretty_xml(element, indent, newline, level=0):
 
 
 if __name__ == '__main__':
-    # generate root node
-    folder_text = 'board'
-    width_text = '550'
-    height_text = '200'
-    folder_path = os.path.join('/opt', folder_text)
+    with open('list.txt', 'r') as f:
+        name_list = f.readlines()
+        id_list = [name.strip('\n').split(".jpg")[0] for name in name_list]
+    folder_text = 'desensitized'
+    width_text = '1440'
+    height_text = '1920'
+    folder_path = os.path.join('/home', folder_text)
     annotation_path = 'Annotations'
-    image_type = '.jpeg'
+    image_type = '.jpg'
     with open('train_label_public.json', 'r', encoding='utf8') as fp:
         train_label = json.load(fp)
+
     label_data = train_label['data']
+
+    image_list = []
     for (key, value) in label_data.items():
         image_id = value['image_id']
+        if image_id not in id_list:
+            continue
+        image_list.append(image_id + image_type)
         board_contour = value['board_contour']
         x_list = [item[0] for item in board_contour]
         x_list.sort()
